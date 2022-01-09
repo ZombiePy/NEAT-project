@@ -1,0 +1,14 @@
+.dmypy.json
+.idea/
+*.pyc
+venv/
+.run/
+
+*.DS_STORE
+
+.vscode/
+
+checkpoints/*
+
+video/*
+winner.pkl
