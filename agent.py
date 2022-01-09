@@ -15,12 +15,12 @@ class Agent(object):
         self.config = config
         self.visualize = visualize
 
-    def work(self):
+    def run(self):
         self.env = retro.make('Airstriker-Genesis')
 
         self.env.reset()
 
-        ob, _, _, done = self.env.step(self.env.action_space.sample())
+        ob, _, _, _ = self.env.step(self.env.action_space.sample())
 
         inx = int(ob.shape[0] / 8)
         iny = int(ob.shape[1] / 8)
@@ -35,6 +35,7 @@ class Agent(object):
         while not done:
             if self.visualize:
                 self.env.render()
+
             ob = cv2.resize(ob, (inx, iny))
             ob = cv2.cvtColor(ob, cv2.COLOR_BGR2GRAY)
             ob = np.reshape(ob, (inx, iny))
@@ -58,12 +59,12 @@ class Agent(object):
 
 
 def eval_genomes(genome, config):
-    worky = Agent(genome, config)
-    return worky.work()
+    agent = Agent(genome, config)
+    return agent.run()
 
 
 if __name__ == '__main__':
-    for iteration in range(1, 10000, 100):
+    for iteration in range(201, 10000, 100):
         config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              'config-feedforward.txt')
@@ -83,13 +84,8 @@ if __name__ == '__main__':
         with open('winner.pkl', 'wb') as output:
             pickle.dump(winner, output, 1)
 
-        # print('\nBest genome:\n{!s}'.format(winner))
-        #
-        # print('\nOutput:')
-        # winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
-
-        worky = MovieAgent(winner, config, iteration=iteration+100)
-        worky.work()
+        agent = MovieAgent(winner, config, iteration=iteration+100)
+        agent.run()
 
         # visualize.draw_net(config, winner, True)
         # visualize.plot_stats(stats, ylog=False, view=True)

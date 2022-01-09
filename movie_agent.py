@@ -14,7 +14,7 @@ class MovieAgent(object):
         self.visualize = visualize
         self.iteration = str(iteration)
 
-    def work(self):
+    def run(self):
         self.env = retro.make('Airstriker-Genesis')
 
         self.env.reset()
@@ -52,7 +52,7 @@ class MovieAgent(object):
             # print(done)
 
             fitness += rew
-            if time.time() - start_time >= 90:
+            if time.time() - start_time >= 600:
                 break
 
         video_recorder.close()
