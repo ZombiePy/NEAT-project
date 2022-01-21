@@ -20,7 +20,7 @@ class MovieAgent(object):
         self.env.reset()
         video_recorder = None
 
-        video_recorder = VideoRecorder(self.env, './video/airstrike_' + self.iteration + '.mp4', enabled=True)
+        video_recorder = VideoRecorder(self.env, './video/airstrike12_' + self.iteration + '.mp4', enabled=True)
 
         ob, _, _, done = self.env.step(self.env.action_space.sample())
 
@@ -46,13 +46,13 @@ class MovieAgent(object):
             imgarray = np.interp(imgarray, (0, 254), (-1, +1))
             actions = net.activate(imgarray)
 
-            actions = [actions[0], 0.0, 0.0, 0.0, 0.0, 0.0, actions[1], actions[2], 0.0, 0.0, 0.0, 0.0]
+            # actions = [actions[0], 0.0, 0.0, 0.0, 0.0, 0.0, actions[1], actions[2], 0.0, 0.0, 0.0, 0.0]
 
             ob, rew, done, info = self.env.step(actions)
             # print(done)
 
             fitness += rew
-            if time.time() - start_time >= 600:
+            if time.time() - start_time >= 300:
                 break
 
         video_recorder.close()

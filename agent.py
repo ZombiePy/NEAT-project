@@ -44,13 +44,13 @@ class Agent(object):
             imgarray = np.interp(imgarray, (0, 254), (-1, +1))
             actions = net.activate(imgarray)
 
-            actions = [actions[0], 0.0, 0.0, 0.0, 0.0, 0.0, actions[1], actions[2], 0.0, 0.0, 0.0, 0.0]
+            # actions = [actions[0], 0.0, 0.0, 0.0, 0.0, 0.0, actions[1], actions[2], 0.0, 0.0, 0.0, 0.0]
 
             ob, rew, done, info = self.env.step(actions)
             # print(done)
 
             fitness += rew
-            if time.time() - start_time >= 60:
+            if time.time() - start_time >= 90:
                 break
 
         # print(fitness)
@@ -64,24 +64,31 @@ def eval_genomes(genome, config):
 
 
 if __name__ == '__main__':
-    for iteration in range(201, 10000, 100):
+    for iteration in range(700, 10000, 100):
         config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              'config-feedforward.txt')
 
         p = neat.Population(config)
+        restored = False
         if iteration != 1:
-            p = neat.Checkpointer.restore_checkpoint('checkpoints/neat-checkpoint-' + str(iteration-2))
+            while not restored:
+                try:
+                    p = neat.Checkpointer.restore_checkpoint('checkpoints12/neat-checkpoint-' + str(iteration))
+                    restored = True
+                except:
+                    iteration -= 1
+
         p.add_reporter(neat.StdOutReporter(True))
         stats = neat.StatisticsReporter()
         p.add_reporter(stats)
-        p.add_reporter(neat.Checkpointer(10, filename_prefix='./checkpoints/neat-checkpoint-'))
+        p.add_reporter(neat.Checkpointer(10, filename_prefix='./checkpoints12/neat-checkpoint-'))
 
         pe = neat.ParallelEvaluator(10, eval_genomes)
 
-        winner = p.run(pe.evaluate, 101)
+        winner = p.run(pe.evaluate, 102)
 
-        with open('winner.pkl', 'wb') as output:
+        with open('winner12.pkl', 'wb') as output:
             pickle.dump(winner, output, 1)
 
         agent = MovieAgent(winner, config, iteration=iteration+100)
