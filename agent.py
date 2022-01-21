@@ -16,7 +16,7 @@ class Agent(object):
         self.visualize = visualize
 
     def run(self):
-        self.env = retro.make('Airstriker-Genesis')
+        self.env = retro.make('Airstriker-Genesis', state=retro.State.DEFAULT, scenario=None)
 
         self.env.reset()
 
@@ -64,7 +64,7 @@ def eval_genomes(genome, config):
 
 
 if __name__ == '__main__':
-    for iteration in range(700, 10000, 100):
+    for iteration in range(1, 10000, 100):
         config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              'config-feedforward.txt')

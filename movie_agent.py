@@ -15,7 +15,7 @@ class MovieAgent(object):
         self.iteration = str(iteration)
 
     def run(self):
-        self.env = retro.make('Airstriker-Genesis')
+        self.env = retro.make('Airstriker-Genesis', state=retro.State.DEFAULT, scenario=None)
 
         self.env.reset()
         video_recorder = None
