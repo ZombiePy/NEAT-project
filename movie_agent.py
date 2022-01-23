@@ -49,7 +49,6 @@ class MovieAgent(object):
             # actions = [actions[0], 0.0, 0.0, 0.0, 0.0, 0.0, actions[1], actions[2], 0.0, 0.0, 0.0, 0.0]
 
             ob, rew, done, info = self.env.step(actions)
-            # print(done)
 
             fitness += rew
             if time.time() - start_time >= 300:

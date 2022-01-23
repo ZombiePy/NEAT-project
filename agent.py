@@ -8,6 +8,11 @@ import pickle
 import gym
 from movie_agent import MovieAgent
 
+from neat import visualize as vis
+
+import os
+os.environ["PATH"] += os.pathsep + r'C:\Program Files (x86)\Graphviz\bin'
+
 
 class Agent(object):
     def __init__(self, genome, config, visualize=False):
@@ -47,10 +52,9 @@ class Agent(object):
             # actions = [actions[0], 0.0, 0.0, 0.0, 0.0, 0.0, actions[1], actions[2], 0.0, 0.0, 0.0, 0.0]
 
             ob, rew, done, info = self.env.step(actions)
-            # print(done)
 
             fitness += rew
-            if time.time() - start_time >= 90:
+            if time.time() - start_time >= 45:
                 break
 
         # print(fitness)
@@ -64,7 +68,7 @@ def eval_genomes(genome, config):
 
 
 if __name__ == '__main__':
-    for iteration in range(1, 10000, 100):
+    for iteration in range(1, 10000, 1000):
         config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              'config-feedforward.txt')
@@ -86,7 +90,7 @@ if __name__ == '__main__':
 
         pe = neat.ParallelEvaluator(10, eval_genomes)
 
-        winner = p.run(pe.evaluate, 102)
+        winner = p.run(pe.evaluate, 1000)
 
         with open('winner12.pkl', 'wb') as output:
             pickle.dump(winner, output, 1)
@@ -94,6 +98,6 @@ if __name__ == '__main__':
         agent = MovieAgent(winner, config, iteration=iteration+100)
         agent.run()
 
-        # visualize.draw_net(config, winner, True)
-        # visualize.plot_stats(stats, ylog=False, view=True)
-        # visualize.plot_species(stats, view=True)
+        vis.draw_net(config, winner, True)
+        vis.plot_stats(stats, ylog=False, view=True)
+        vis.plot_species(stats, view=True)
